@@ -1,0 +1,6 @@
+# Audit rules for OPSEC system monitoring
+-w /etc/passwd -p wa -k passwd_changes
+-w /etc/shadow -p wa -k shadow_changes
+-w /etc/sudoers -p wa -k sudoers_changes
+-w /var/log/ -p wa -k log_monitoring
+-w /etc/ssh/sshd_config -p wa -k ssh_config_changes
