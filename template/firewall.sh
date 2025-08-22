@@ -1,26 +1,30 @@
 #!/bin/bash
-# OPSEC Firewall Script
+# 🛡️ Linux Minimal Firewall – iptables
+# Blocks all inbound traffic except SSH (22) and HTTPS (443)
+# Default: deny incoming, allow outgoing
 
 # Flush old rules
 iptables -F
 iptables -X
-iptables -t nat -F
-iptables -t nat -X
-iptables -t mangle -F
-iptables -t mangle -X
 
 # Default policies
 iptables -P INPUT DROP
 iptables -P FORWARD DROP
 iptables -P OUTPUT ACCEPT
 
-# Allow localhost
+# Allow loopback
 iptables -A INPUT -i lo -j ACCEPT
-iptables -A OUTPUT -o lo -j ACCEPT
 
-# Allow SSH (only for whitelisted users)
-iptables -A INPUT -p tcp --dport 22 -m state --state NEW,ESTABLISHED -j ACCEPT
-iptables -A OUTPUT -p tcp --sport 22 -m state --state ESTABLISHED -j ACCEPT
+# Allow established connections
+iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
 
-# Drop invalid packets
-iptables -A INPUT -m state --state INVALID -j DROP
+# Allow SSH (adjust port if needed)
+iptables -A INPUT -p tcp --dport 22 -j ACCEPT
+
+# Allow HTTPS
+iptables -A INPUT -p tcp --dport 443 -j ACCEPT
+
+# Log dropped packets (optional)
+iptables -A INPUT -j LOG --log-prefix "IPTables-Dropped: " --log-level 4
+
+echo "[+] Firewall rules applied."

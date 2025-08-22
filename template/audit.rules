@@ -1,6 +1,19 @@
-# Audit rules for OPSEC system monitoring
--w /etc/passwd -p wa -k passwd_changes
--w /etc/shadow -p wa -k shadow_changes
--w /etc/sudoers -p wa -k sudoers_changes
--w /var/log/ -p wa -k log_monitoring
--w /etc/ssh/sshd_config -p wa -k ssh_config_changes
+# 🎯 Linux Auditd rules – track critical changes
+
+# Track use of privileged commands
+-a always,exit -F arch=b64 -S execve -C uid!=euid -k privileged
+
+# Monitor changes to passwd and shadow
+-w /etc/passwd -p wa -k identity
+-w /etc/shadow -p wa -k identity
+
+# Monitor SSH config
+-w /etc/ssh/sshd_config -p wa -k ssh_config
+
+# Monitor sudoers
+-w /etc/sudoers -p wa -k sudoers
+
+# Monitor kernel modules
+-w /sbin/insmod -p x -k modules
+-w /sbin/rmmod -p x -k modules
+-w /sbin/modprobe -p x -k modules

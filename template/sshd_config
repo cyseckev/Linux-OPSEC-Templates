@@ -1,15 +1,26 @@
+# 🔒 Hardened OpenSSH configuration
+
 Port 22
 Protocol 2
 PermitRootLogin no
 PasswordAuthentication no
-PermitEmptyPasswords no
 ChallengeResponseAuthentication no
 UsePAM yes
 X11Forwarding no
 AllowTcpForwarding no
 AllowAgentForwarding no
-AllowUsers opsecuser
-LogLevel VERBOSE
+PermitEmptyPasswords no
+
+# Only allow specific users (replace with your user)
+AllowUsers secureuser
+
+# Max sessions
 MaxAuthTries 3
-ClientAliveInterval 300
-ClientAliveCountMax 0
+LoginGraceTime 30
+MaxSessions 2
+
+# Host key algorithms
+HostKeyAlgorithms ssh-ed25519
+
+# Logging
+LogLevel VERBOSE

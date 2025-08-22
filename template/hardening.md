@@ -1,21 +1,56 @@
-# 🔒 Linux Template Hardening Guide
+# 🔐 Linux Hardening Guide
 
-Dieses Template ist ein **praxisgetestetes Minimal-Setup** für gehärtete Linux-Umgebungen.
+This guide summarizes **core steps for securing a Linux system**.  
+It is not exhaustive, but provides a strong OPSEC baseline.
 
-## 🛡️ Enthalten
-- `sshd_config` – restriktive SSH-Policies (kein Root, keine Passwörter, nur definierte User)
-- `sysctl.conf` – Kernel- und Netzwerk-Hardening
-- `firewall.sh` – Minimalistische iptables-Policy
-- `audit.rules` – System-Monitoring & Logging
+---
 
-## 🚀 Anwendung
-```bash
-# Firewall aktivieren
-sudo bash firewall.sh
+## 1️⃣ User & Authentication
+- Disable root SSH login  
+- Enforce strong passwords or SSH keys only  
+- Use `sudo` with logging  
 
-# Sysctl laden
-sudo sysctl -p sysctl.conf
+    sudo passwd -l root
 
-# SSH-Konfig übernehmen
-sudo cp sshd_config /etc/ssh/sshd_config
-sudo systemctl restart sshd
+---
+
+## 2️⃣ System Updates
+- Enable unattended upgrades (Debian/Ubuntu)  
+- Regularly patch kernel and software  
+
+    sudo apt update && sudo apt upgrade -y
+
+---
+
+## 3️⃣ Firewall & Networking
+- Default: deny all incoming traffic  
+- Allow only required ports (e.g., 22, 443)  
+- Use iptables/nftables (see `firewall.sh`)  
+
+---
+
+## 4️⃣ Kernel Hardening
+- Apply `sysctl.conf` from this repo  
+- Disable IP forwarding, redirects, and source routing  
+- Enable SYN cookies and stricter TCP handling  
+
+---
+
+## 5️⃣ SSH Security
+- Use provided `sshd_config`  
+- Key-based login only  
+- Disable password authentication  
+
+---
+
+## 6️⃣ Monitoring & Logging
+- Apply `audit.rules` for critical system events  
+- Forward logs to remote syslog (optional)  
+- Regular log review  
+
+---
+
+## 7️⃣ OPSEC Tips
+- Minimize installed packages  
+- Use separate VM/container for risky tasks  
+- Combine with VPN/Tor/WireGuard for anonymity  
